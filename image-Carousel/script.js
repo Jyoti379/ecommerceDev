@@ -4,12 +4,12 @@ const img=document.querySelectorAll('#imgs img');
 
 function carouselImg(){
     idx++;
-    if(idx>img.length){
+    if(idx>img.length-1){
         idx=0;
     }
-  imgs.style.transform=`translatex(${-idx*1400}px)`;
+  imgs.style.transform=`translatex(${-idx*500}px)`;
 }
-carouselImg();
+setInterval(carouselImg,2000);
 
 
 
