@@ -119,14 +119,107 @@ function notification(title){
     },3000)
 }
 /*if cart-holder clicked change  cart-items style to display block*/ 
-document.querySelector('#cart-holder').addEventListener('click',()=>{
-    document.querySelector('#cart').style.display="block";
+document.getElementById('cart-holder').addEventListener('click',()=>{
+    getCartDetails()  ;
+    
+    
 
 })
 document.querySelector('#cart-btn-bottom').addEventListener('click',()=>{
     document.querySelector('#cart').style.display="block";
 
 })
+
+/*adding api to connect with backend localhost:3000 */
+window.addEventListener('DOMContentLoaded',()=>{
+    axios.get('http://localhost:3000/products').then((data)=>{
+     console.log(data);
+      if(data.request.status === 200){
+          const products = data.data.products;
+         const parentSection = document.getElementById('Products');
+        
+        products.forEach(product=>{
+            const productHtml=`
+            <div>
+            <h1>${product.title} </h1>
+            <img src=${product.imageUrl}></img>
+            <button onclick="addInCart(${product.id})">Add To Cart</button>
+            </div>`
+
+            parentSection.innerHTML =  parentSection.innerHTML + productHtml;
+        })
+        
+      }
+    })
+})
+function addInCart(productId){
+    axios.post('http://localhost:3000/cart',{productId:productId})
+    .then((response)=>{
+       if(response.status==200){
+        notify(response.data.message)
+       }
+       else{
+        throw new Error();
+       }
+    }).catch((err)=>{
+        ;
+    })
+    
+    }
+    function notify(message){
+        const container=document.getElementById('container'); 
+       const notify= document.createElement('div');
+    notify.classList.add('toast');
+    notify.innerHTML=`<h4>${message}<h4>`;
+   container.appendChild(notify);
+
+    setTimeout(()=>{
+        notify.remove();
+    },3000)
+
+    }
+function getCartDetails(){
+    axios.get('http://localhost:3000/cart').then(response=>{
+        if(response.status==200){
+            response.data.products.forEach(product=>{
+                const cartContent=document.querySelector('.cart-items');
+               cartContent.innerHTML+=`<div class="cart-item cart-column">
+               <img class="cart-item-image" src="${product.imageUrl}" width="100" height="100">
+               <span class="cart-item-title">${product.title}</span>
+           </div>
+           <span class="cart-price cart-column">${product.price}</span>
+           
+           <div class="cart-quantity cart-column">
+               <input class="cart-quantity-input" type="number" value="1">
+               <button class="btn btn-danger" type="button">REMOVE</button>
+           </div>`
+           document.querySelector('.cart-number').innerText = parseInt(document.querySelector('.cart-number').innerText)+1;
+           var removeCartItems=document.getElementsByClassName('btn-danger');
+           for(var i=0;i<removeCartItems.length;i++){
+               var button=removeCartItems[i];
+               button.addEventListener('click', removeCartItem)
+           
+           }
+           function removeCartItem(event) {
+               var buttonClicked = event.target
+               buttonClicked.parentElement.parentElement.remove();
+               document.querySelector('.cart-number').innerText = 0;
+               updateCartTotal();
+           }
+
+             })
+             
+             document.querySelector('#cart').style.display="block";
+        }
+       
+    }).catch(err=>{
+        console.log(err);
+    })
+} 
+
+    
+
+
 
 
 
