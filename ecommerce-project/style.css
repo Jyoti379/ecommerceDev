@@ -193,6 +193,7 @@ section h2{
 }
 .cart-item {
     width: 45%;
+    display: block;
 }
 .cart-price {
     width: 20%;
@@ -295,6 +296,22 @@ section h2{
     border-radius: 5px;
     padding:2rem;
 }
+ .pagination{
+    margin-top:2rem;
+    text-align: center;
+ }
+ .pagination button{
+    margin: 12px;
+    padding: 10px;
+    border:1px solid #44c7f3;
+    font-weight: bold;
+    color: #777;
+    border-radius: 5px;
+ }
+ .pagination button:hover{
+    color:white;
+    background-color: #44c7f3;
+ }
 
 
  footer{

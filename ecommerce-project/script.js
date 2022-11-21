@@ -131,27 +131,7 @@ document.querySelector('#cart-btn-bottom').addEventListener('click',()=>{
 })
 
 /*adding api to connect with backend localhost:3000 */
-window.addEventListener('DOMContentLoaded',()=>{
-    axios.get('http://localhost:3000/products').then((data)=>{
-     console.log(data);
-      if(data.request.status === 200){
-          const products = data.data.products;
-         const parentSection = document.getElementById('Products');
-        
-        products.forEach(product=>{
-            const productHtml=`
-            <div>
-            <h1>${product.title} </h1>
-            <img src=${product.imageUrl}></img>
-            <button onclick="addInCart(${product.id})">Add To Cart</button>
-            </div>`
 
-            parentSection.innerHTML =  parentSection.innerHTML + productHtml;
-        })
-        
-      }
-    })
-})
 function addInCart(productId){
     axios.post('http://localhost:3000/cart',{productId:productId})
     .then((response)=>{
@@ -193,19 +173,7 @@ function getCartDetails(){
                <input class="cart-quantity-input" type="number" value="1">
                <button class="btn btn-danger" type="button">REMOVE</button>
            </div>`
-           document.querySelector('.cart-number').innerText = parseInt(document.querySelector('.cart-number').innerText)+1;
-           var removeCartItems=document.getElementsByClassName('btn-danger');
-           for(var i=0;i<removeCartItems.length;i++){
-               var button=removeCartItems[i];
-               button.addEventListener('click', removeCartItem)
-           
-           }
-           function removeCartItem(event) {
-               var buttonClicked = event.target
-               buttonClicked.parentElement.parentElement.remove();
-               document.querySelector('.cart-number').innerText = 0;
-               updateCartTotal();
-           }
+   
 
              })
              
@@ -217,6 +185,77 @@ function getCartDetails(){
     })
 } 
 
+window.addEventListener('DOMContentLoaded',()=>{
+    const page=1;
+    axios.get(`http://localhost:3000/products?page=${page}`)
+    .then((response)=>{
+        console.log(response);
+        listOfProducts(response.data.products);
+        showPagination(response.data)
+    }).catch(err=>{
+        console.log(err)
+    })
+
+  
+})
+ function listOfProducts(productsData){
+   // initiallize product html to null every time
+   const products=document.querySelector('.container')
+   products.innerHTML='';
+   
+   productsData.forEach(product=>{
+    const products=document.querySelector('.container')
+    
+    const prodDetail=`<div>
+    <h1>${product.title} </h1>
+    <img src=${product.imageUrl}></img>
+    <button onclick="addInCart(${product.id})">Add To Cart</button>
+    </div>`
+    products.innerHTML+=prodDetail
+   })
+        
+        
+ 
+ }
+ function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previousPage,lastPage}){
+ 
+   const pagination=document.querySelector('.pagination');
+   pagination.innerHTML='';
+   if(hasPreviousPage){
+    const btn2=document.createElement('button')
+    btn2.innerHTML=previousPage
+    btn2.addEventListener('click',()=>{
+        getProduct(previousPage)
+    })
+    pagination.appendChild(btn2)
+   }
+   const btn1=document.createElement('button')
+   btn1.innerhtml=currentPage
+    btn1.addEventListener('click',()=>{
+        getProduct(currentPage)
+    })
+    pagination.appendChild(btn1);
+
+    if(hasNextPage){
+        const btn3=document.createElement('button')
+        btn3.innerHTML=nextPage
+        btn3.addEventListener('click',()=>{
+            getProduct(nextPage)
+        })
+        pagination.appendChild(btn3) 
+    }
+
+ }
+ function getProduct(page){
+    axios.get(`http://localhost:3000/products?page=${page}`)
+    .then((res)=>{
+        listOfProducts(res.data.products)
+        showPagination(res.data)
+       
+    }).catch(err=>{
+        console.log(err)
+    })
+ }
     
 
 
