@@ -91,12 +91,8 @@ function purchaseClicked() {
         alert('You have Nothing in Cart , Add some products to purchase !');
         return
     }
-    alert('Thank you for your purchase')
-    var cartItems = document.getElementsByClassName('cart-items')[0]
-    while (cartItems.hasChildNodes()) {
-        cartItems.removeChild(cartItems.firstChild)
-    }
-    updateCartTotal()
+   
+   postOrder();
 }
 /*X cancel button on click  hide the cart page*/
 
@@ -120,9 +116,8 @@ function notification(title){
 }
 /*if cart-holder clicked change  cart-items style to display block*/ 
 document.getElementById('cart-holder').addEventListener('click',()=>{
-    getCartDetails()  ;
-    
-    
+    getCartDetails() ;
+  
 
 })
 document.querySelector('#cart-btn-bottom').addEventListener('click',()=>{
@@ -160,25 +155,34 @@ function addInCart(productId){
     }
 function getCartDetails(){
     axios.get('http://localhost:3000/cart').then(response=>{
-        if(response.status==200){
+        
+        
             response.data.products.forEach(product=>{
+               
                 const cartContent=document.querySelector('.cart-items');
-               cartContent.innerHTML+=`<div class="cart-item cart-column">
-               <img class="cart-item-image" src="${product.imageUrl}" width="100" height="100">
-               <span class="cart-item-title">${product.title}</span>
-           </div>
-           <span class="cart-price cart-column">${product.price}</span>
-           
-           <div class="cart-quantity cart-column">
-               <input class="cart-quantity-input" type="number" value="1">
-               <button class="btn btn-danger" type="button">REMOVE</button>
-           </div>`
-   
+                cartContent.innerHTML+=`<div class="cart-item cart-column">
+                <img class="cart-item-image" src="${product.imageUrl}" width="100" height="100">
+                <span class="cart-item-title">${product.title}</span>
+            </div>
+            <span class="cart-price cart-column">${product.price}</span>
+            
+            <div class="cart-quantity cart-column">
+                <input class="cart-quantity-input" type="number" value="${product.cartItem.quantity}">
+                <button class="btn btn-danger" type="button">REMOVE</button>
+            </div>`
+            
+           var total=document.querySelector('#total-value');
+          var totalVal= total.innerText
+     total.innerText=(parseInt(totalVal) + (parseInt(product.price)) *(parseInt(product.cartItem.quantity))*100)/100
 
-             })
+            
+          //  var removeCartItems=document.getElementsByClassName('btn-danger');
+           
+            
+ })
              
              document.querySelector('#cart').style.display="block";
-        }
+        
        
     }).catch(err=>{
         console.log(err);
@@ -196,6 +200,14 @@ window.addEventListener('DOMContentLoaded',()=>{
         console.log(err)
     })
 
+    axios.get('http://localhost:3000/cart')
+    .then((res)=>{
+        res.data.products.forEach(product=>{
+            console.log(product);
+            addProductTOCart(product)
+        })
+    })
+
   
 })
  function listOfProducts(productsData){
@@ -209,9 +221,12 @@ window.addEventListener('DOMContentLoaded',()=>{
     const prodDetail=`<div>
     <h1>${product.title} </h1>
     <img src=${product.imageUrl}></img>
-    <button onclick="addInCart(${product.id})">Add To Cart</button>
+    <button onclick="addProductTOCart()">Add To Cart</button>
     </div>`
-    products.innerHTML+=prodDetail
+    products.innerHTML+=prodDetail;
+
+    
+
    })
         
         
@@ -256,8 +271,57 @@ window.addEventListener('DOMContentLoaded',()=>{
         console.log(err)
     })
  }
-    
+ function addProductTOCart({
+    id,
+    title,
+    imageUrl,
+    price,
+    cartItem:{quantity},
+ }){
+    const itemId=`cartItem-${id}`;
+    const item= document.getElementById(itemId);
 
+    if(item){
+        item.querySelector(".cart-quantity").value = quantity;
+    }
+    else{
+        const newItem =document.createElement('div');
+        newItem.className='cartitem'
+        newItem.id=itemId;
+        document.querySelector('.cart-number').innerText = parseInt(document.querySelector('.cart-number').innerText)+1;
+        newItem.innerHTML=`<img src=${imageUrl}>`;
+        newItem.innerHTML=`<p class="cart-item-title">${title}</p>`
+        newItem.innerHTML=`<input class="cart-quantity type="number" value=${quantity}>`
+        newItem.innerHtml=`<p class="cart-price">${price}</p>`
+
+        const removebtn= document.createElement('button')
+        removebtn.innerText='Remove'
+        removebtn.addEventListener('click',()=>{
+            const total=totalPrice.innerText;
+            let qty= newItem.querySelector('.cart-quantity').value;
+            totalPrice.innerText=parseInt(total)-parseInt(price)-parseInt(qty);
+            newItem.remove();
+        })
+        
+    }
+ }
+ function postOrder(){
+    axios.post('http://localhost:3000/orders')
+    .then((res)=>{
+        alert(`${res.data.message}`);
+        console.log(res);
+        const cartItems=document.querySelector('.cart-items');
+        var total=document.querySelector('#total-value');
+
+       cartItems.remove();
+       document.querySelector('.cart-number').innerText=0;
+       total.innerText=0;
+        
+       
+    }).catch(err=>{
+        console.log(err)
+    })
+ }
 
 
 
