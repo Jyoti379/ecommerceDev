@@ -94,6 +94,10 @@ function purchaseClicked() {
    
    postOrder();
 }
+/*get orders */
+
+
+
 /*X cancel button on click  hide the cart page*/
 
 var cancelBtn=document.getElementById('cancel-btn');
@@ -114,7 +118,7 @@ function notification(title){
         notify.remove();
     },3000)
 }
-/*if cart-holder clicked change  cart-items style to display block*/ 
+/*if cart-holder clicked change  cart-items style to display block*/
 document.getElementById('cart-holder').addEventListener('click',()=>{
     getCartDetails() ;
   
@@ -130,14 +134,9 @@ document.querySelector('#cart-btn-bottom').addEventListener('click',()=>{
 function addInCart(productId){
     axios.post('http://localhost:3000/cart',{productId:productId})
     .then((response)=>{
-       if(response.status==200){
-        notify(response.data.message)
-       }
-       else{
-        throw new Error();
-       }
+      console.log(response)
     }).catch((err)=>{
-        ;
+       console.log(err) ;
     })
     
     }
@@ -173,10 +172,18 @@ function getCartDetails(){
             
            var total=document.querySelector('#total-value');
           var totalVal= total.innerText
-     total.innerText=(parseInt(totalVal) + (parseInt(product.price)) *(parseInt(product.cartItem.quantity))*100)/100
+     total.innerText=parseInt(totalVal) + ((parseInt(product.price)) *(parseInt(product.cartItem.quantity)))*100/100
 
             
-          //  var removeCartItems=document.getElementsByClassName('btn-danger');
+           var removeCartItems=document.querySelector('.btn-danger');
+           removeCartItems.addEventListener('click',()=>{
+            document.querySelector('.cart-items').remove()
+            axios.post('http://localhost:3000/cart-delete-item',{productId:product.id})
+            document.querySelector('.cart-number').innerText=0;
+            document.querySelector('#total-value').innerText=0
+            
+           })
+
            
             
  })
@@ -202,11 +209,22 @@ window.addEventListener('DOMContentLoaded',()=>{
 
     axios.get('http://localhost:3000/cart')
     .then((res)=>{
+        
         res.data.products.forEach(product=>{
-            console.log(product);
-            addProductTOCart(product)
-        })
+              addProductTOCart(product)
+           })
     })
+
+    axios.get('http://localhost:3000/orders').then((res)=>{
+        console.log(res.data)
+      
+      //  getOders(res.data.order);
+      
+    }).catch(err=>{
+        console.log(err)
+    })
+
+    
 
   
 })
@@ -221,7 +239,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     const prodDetail=`<div>
     <h1>${product.title} </h1>
     <img src=${product.imageUrl}></img>
-    <button onclick="addProductTOCart()">Add To Cart</button>
+    <button onclick="addInCart(${product.id})">Add To Cart</button>
     </div>`
     products.innerHTML+=prodDetail;
 
@@ -271,6 +289,10 @@ window.addEventListener('DOMContentLoaded',()=>{
         console.log(err)
     })
  }
+
+ 
+
+
  function addProductTOCart({
     id,
     title,
@@ -278,8 +300,11 @@ window.addEventListener('DOMContentLoaded',()=>{
     price,
     cartItem:{quantity},
  }){
-    const itemId=`cartItem-${id}`;
+    
+  const itemId=`cartitem-${id}`;
+  console.log(itemId)
     const item= document.getElementById(itemId);
+   // console.log(item)--null
 
     if(item){
         item.querySelector(".cart-quantity").value = quantity;
@@ -306,7 +331,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     }
  }
  function postOrder(){
-    axios.post('http://localhost:3000/orders')
+    axios.post('http://localhost:3000/createorders')
     .then((res)=>{
         alert(`${res.data.message}`);
         console.log(res);
@@ -318,10 +343,13 @@ window.addEventListener('DOMContentLoaded',()=>{
        total.innerText=0;
         
        
-    }).catch(err=>{
+    })
+     .catch(err=>{
         console.log(err)
     })
  }
+
+ 
 
 
 

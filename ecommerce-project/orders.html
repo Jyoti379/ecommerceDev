@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>order-Page</title>
+</head>
+<body>
+    <h1 style="text-align:center;color:rgb(62, 61, 61)">orders</h1>
+        <ul class="class-order"></ul>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.2.0/axios.min.js"></script>
+     <script>
+        window.addEventListener('DOMContentLoaded',()=>{
+      
+         axios.get('http://localhost:3000/orders').then((res)=>{
+        console.log(res)
+        
+       getOrder(res.order);
+      
+    }).catch(err=>{
+        console.log(err)
+    })
+
+     function getOrder(orders){
+       
+     orders.forEach(order=>{
+       
+        let orderList=document.querySelector('.class-order')
+        orderList.innerHTML+=`<p style="font-weight:bolder;color:red;border:solid">Order-ID:${order.id}</p>
+        <p>ordered on ${order.createdAt}</p>`
+     order.products.forEach(product=>{
+        let orderList=document.querySelector('.class-order')
+         orderList.innerHTML+=`
+         <br>
+         <img src=${product.imageUrl}>
+         <br>
+         <li style="font-weight:bold;color:blue">${product.id}--${product.title}--${product.price}</li>
+         `  
+      })
+       
+      
+      
+     })
+        
+     }
+})
+    </script>
+</body>
+</html>
