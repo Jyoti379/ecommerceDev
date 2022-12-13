@@ -132,7 +132,7 @@ document.querySelector('#cart-btn-bottom').addEventListener('click',()=>{
 /*adding api to connect with backend localhost:3000 */
 
 function addInCart(productId){
-    axios.post('http://localhost:3000/cart',{productId:productId})
+    axios.post('http://13.113.249.116:3000/cart',{productId:productId})
     .then((response)=>{
       console.log(response)
     }).catch((err)=>{
@@ -153,7 +153,7 @@ function addInCart(productId){
 
     }
 function getCartDetails(){
-    axios.get('http://localhost:3000/cart').then(response=>{
+    axios.get('http://13.113.249.116:3000/cart').then(response=>{
         
         
             response.data.products.forEach(product=>{
@@ -198,7 +198,7 @@ function getCartDetails(){
 
 window.addEventListener('DOMContentLoaded',()=>{
     const page=1;
-    axios.get(`http://localhost:3000/products?page=${page}`)
+    axios.get(`http://13.113.249.116:3000/products?page=${page}`)
     .then((response)=>{
         console.log(response);
         listOfProducts(response.data.products);
@@ -207,7 +207,7 @@ window.addEventListener('DOMContentLoaded',()=>{
         console.log(err)
     })
 
-    axios.get('http://localhost:3000/cart')
+    axios.get('http://13.113.249.116:3000/cart')
     .then((res)=>{
         
         res.data.products.forEach(product=>{
@@ -215,7 +215,7 @@ window.addEventListener('DOMContentLoaded',()=>{
            })
     })
 
-    axios.get('http://localhost:3000/orders').then((res)=>{
+    axios.get('http://13.113.249.116:3000/orders').then((res)=>{
         console.log(res.data)
       
       //  getOders(res.data.order);
@@ -280,7 +280,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
  }
  function getProduct(page){
-    axios.get(`http://localhost:3000/products?page=${page}`)
+    axios.get(`http://13.113.249.116:3000/products?page=${page}`)
     .then((res)=>{
         listOfProducts(res.data.products)
         showPagination(res.data)
@@ -331,7 +331,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     }
  }
  function postOrder(){
-    axios.post('http://localhost:3000/createorders')
+    axios.post('http://13.113.249.116:3000/createorders')
     .then((res)=>{
         alert(`${res.data.message}`);
         console.log(res);
