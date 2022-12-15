@@ -16,14 +16,17 @@
           <hr>
 
           <label> <b>Name</b></label>
-        <input id='username' type="text"  placeholder="Enter  Name" name="username"  required />
+        <input id='username' type="text"  placeholder="Enter  Name" name="username"   />
       
         <label><b> EmailId</b></label>
-        <input id='email' type="text"  placeholder="Enter Email"  name="emailId" required />
+        <input id='email' type="text"  placeholder="Enter Email"  name="emailId"  />
 
         <label> <b>Phone Number</b></label>
-        <input id='phonenumber' type="tel"  placeholder="Enter Number" name="phonenumber" required />
-      
+        <input id='phonenumber' type="phonenumber"  placeholder="Enter Number" name="phonenumber" required />
+        
+        <label><b> password</b></label>
+        <input id='password' type="password"  placeholder="password"  name="password" />
+
          
             <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
           </label>
@@ -42,11 +45,13 @@
             const name = event.target.username.value;
             const email = event.target.emailId.value;
             const phonenumber = event.target.phonenumber.value;
+            const password =event.target.password.value
           
             const obj = {
                 name,
                 email,
-                phonenumber
+                phonenumber,
+                password,
             } 
             axios.post("http://localhost:3000/user/signup",obj)
             .then((response)=>{
