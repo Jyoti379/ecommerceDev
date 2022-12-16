@@ -4,35 +4,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="signup.css">
+    <link rel="stylesheet" href="login.css">
     <title>login-form</title>
 </head>
 <body>
-    <form onsubmit="userLogin(event)" style="border:2px solid #ccc">
-        <label> <b>Username</b></label>
-        <input id='username' type="text"  placeholder="Enter email" name="username"   />
+    <div class="container">
+    <form onsubmit="userLogin(event)">
+        <label> <b>email</b></label>
+        <input id='email' type="text"  placeholder="Enter email" name="username"   />
         <label><b> password</b></label>
         <input id='password' type="password"  placeholder="password"  name="password" />
         
-        <button><b>LOGIN</b></button>
+        <button><b>LOGIN</b></button><br>
+       <p><a href="../signup/signUp.html" >New User-Signup Now</a></p> 
+       <ul id="login"></ul>
     </form>
-    <a href="signUp.html" >New User-Signup Now</a>
-    <ul id="login"></ul>
+    
+    </div>
+   
+    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script>
       async  function userLogin(event)  {
         try{
             event.preventDefault();
-            const name = event.target.username.value;
+            const email = event.target.email.value;
            
             const password =event.target.password.value
           
             const obj = {
-                name,
+                email,
                  password,
             }
         await axios.post("http://localhost:3000/user/login",obj).then(response=>{
+            console.log(response)
             alert(response.data.message) 
         })
         
