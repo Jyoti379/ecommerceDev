@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>expense page</title>
+    <link rel="stylesheet" href="add.css">
+</head>
+<body>
+    <div class="container">
+        <form onsubmit="addExpense(event)">
+            <label> choose Expenseamount</label>
+            <input id='expense' type="number" name="Expenseamount"  />
+            <label> choose description</label>
+            <input id='description' type="text" name="description" />
+            <label>choose catagory</label>
+           <select id="catagory" name="catagory">
+            <option value="Fuel">Fuel</option>
+            <option value="Bills">Bills</option>
+            <option value="Movies">Movies</option>
+            <option value="Shopping">Shopping</option>
+           </select>
+            <button> Add Expense </button>
+            <ul id="add-expense"></ul>  
+        </form> 
+        
+    </div>
+    
+          
+           
+           <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+           <script>
+             async  function addExpense(event)  {
+                try{
+                   event.preventDefault();
+                   const Expenseamount = event.target.Expenseamount.value;
+                   const description = event.target.description.value;
+                   const catagory = event.target.catagory.value;
+                   
+                   const obj = {
+                       Expenseamount,
+                       description,
+                       catagory
+                   } 
+                 await  axios.post("http://localhost:3000/expense/add-expense",obj)
+                   .then((response)=>{
+                      console.log(response)
+                      showExpenses(response.data.expenseDetails)
+                   }).catch((err)=>{
+                       console.log(err)
+                   })
+                }catch(err){
+                    console.log(err)
+                }
+                  
+                  }
+         window.addEventListener("DOMContentLoaded", () => {
+         axios.get("http://localhost:3000/expense/get-expenses")
+                .then(response => {
+
+                    console.log(response);
+                    for (var i = 0; i < response.data.expenseDetails.length; i++) {
+                      showExpenses(response.data.expenseDetails[i]);
+                    }
+                })
+                .catch(err => console.log(err))
+
+        })
+                 
+        function showExpenses(expense){
+                    document.getElementById('expense').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('catagory').value ='';
+               
+
+                const parentNode = document.getElementById('add-expense');
+                const childHTML = `<li id=${expense.id}> ${expense.Expenseamount} : ${expense.description}:${expense.catagory}
+                                        <button onclick=deleteExpense('${expense.id}')> Delete Expense</button>
+         <button onclick=editUser('${expense.Expenseamount}','${expense.description}','${expense.catagory}','${expense.id}')>Edit Expense </button>
+                                     </li>`
+
+                parentNode.innerHTML = parentNode.innerHTML + childHTML;
+                  }
+
+
+  function deleteExpense(expenseId){
+
+axios.delete(`http://localhost:3000/expense/delete-expense/${expenseId}`)
+           .then((response)=>{
+            removeUserFromScreen(expenseId);
+           }).catch(err=>console.log(err))
+            }
+
+        function removeUserFromScreen(expenseId){
+            const parentNode = document.getElementById('add-expense');
+            const childNodeToBeDeleted = document.getElementById(expenseId);
+            if(childNodeToBeDeleted) {
+                parentNode.removeChild(childNodeToBeDeleted)
+            }
+        }
+                  </Script>
+      
+        
+       
+      
+    
+</body>
+</html>
