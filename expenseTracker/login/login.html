@@ -39,10 +39,11 @@
             }
         await axios.post("http://localhost:3000/user/login",obj).then(response=>{
             console.log(response)
-            if(response.status==200){
+            
             alert(response.data.message) 
-            window.location.href="../expense/addExpense.html"
-            }
+           localStorage.setItem('token',response.data.token)
+          window.location.href="../expense/addExpense.html"
+           
             
 
             })
