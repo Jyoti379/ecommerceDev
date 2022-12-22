@@ -49,4 +49,22 @@ input[type=text], input[type=number]{
  button:hover {
     opacity:1;
   }
+  #premium{
+    color:rgb(237, 47, 47);
+    font-weight: bold;
+  }
+  table {
+    font-family: arial, sans-serif;
+   
+    width:100%;
+  }
   
+  td,tr, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #25e49b;
+  }
