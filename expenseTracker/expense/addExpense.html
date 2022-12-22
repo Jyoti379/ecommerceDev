@@ -9,6 +9,8 @@
 </head>
 <body>
     <div class="container">
+        <button id="razorpay"> Buy Premium </button>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <form onsubmit="addExpense(event)">
             <label> choose Expenseamount</label>
             <input id='expense' type="number" name="Expenseamount"  />
@@ -24,12 +26,9 @@
             <button> Add Expense </button>
             <ul id="add-expense"></ul>  
         </form> 
-        
+
     </div>
-    
-          
-           
-           <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
            <script>
              async  function addExpense(event)  {
                 try{
@@ -105,6 +104,36 @@ axios.delete(`http://localhost:3000/expense/delete-expense/${expenseId}`,{header
             if(childNodeToBeDeleted) {
                 parentNode.removeChild(childNodeToBeDeleted)
             }
+        }
+
+        document.getElementById('razorpay').onclick = async function(e){
+            const token = localStorage.getItem('token');
+            const response=await axios.get('http://localhost:3000/purchase/purchaseMembership',{headers:{"Authorization":token}})
+            console.log(response);
+           var options={
+                "key_id":response.key_id,
+                "order_id":response.data.order.id,
+                "handler":async function(response){
+                    await axios.post('http://localhost:3000/purchase/updateTransactionStatus',{
+                        order_id:options.order_id,
+                        payment_id:response.razorpay_payment_id,
+                    },{headers:{"Authorization":token}})
+                    alert('You are a Premium User Now')
+                    if(response.status ==201){
+                     document.getElementById('razorpay').innerText="Premium Member"
+                    }
+
+                },
+            }
+            const rzp1= new Razorpay(options);
+            rzp1.open();
+            e.preventDefault();
+
+            rzp1.on('payment.failed',function(response){
+                console.log(response)
+                alert('Something went Wrong')
+            })
+
         }
                   </Script>
       
