@@ -28,7 +28,8 @@
             </select>
             <button> Add Expense </button>
             <ul id="add-expense"></ul>
-            <ul id="leaderboard"></ul>
+            
+            <table id="leaderboard"></table>
         </form>
 
     </div>
@@ -141,7 +142,7 @@
              console.log(userLeaderboard.data)
 
         const leaderboardList=document.getElementById('leaderboard');
-            leaderboardList.innerHTML="<h3>Leader board</h3><table><tr><th>user</th><th>total-expense</th></tr></table>";
+            leaderboardList.innerHTML="<h3>Leader board</h3><tr><th>user</th><th>total-expense</th></tr>";
            userLeaderboard.data.forEach((userDetails)=>{
               leaderboardList.innerHTML +=`<table>
   

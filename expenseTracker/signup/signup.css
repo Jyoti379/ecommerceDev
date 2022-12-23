@@ -1,5 +1,5 @@
 * {box-sizing: border-box}
-/*form */
+
 
 
 /* Full-width input fields */
@@ -53,6 +53,7 @@ button:hover {
 /* Add padding to container elements */
 .container {
   padding: 16px;
+  
 }
 
 /* Clear floats */
