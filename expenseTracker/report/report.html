@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="report.css">
+    <title>Report Generate</title>
+</head>
+<body>
+    <div class="report">
+    
+    <h1>DAY TO DAY EXPENSES</h1>
+    <p id="date"></p>
+   
+    <div class="container">
+       <h2>2021</h2>  
+        <h4> march 2021</h4>
+       <table><tr><th>Date</th><th>Description</th><th>Category</th><th>Income</th><th>Expenses</th></tr>
+         <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+
+    <h4>Yearly Report</h4>
+    <table><tr><th>Month</th><th>Income</th><th>Expenses</th><th>Savings</th></tr>
+        <tr><td></td><td></td><td></td><td></td></tr>
+   </table>
+
+
+
+    <h4>Notes Report 2021</h4>
+    <table><tr><th>Dates</th><th>Notes</th></tr>
+        <tr><td></td><td></tr>
+   </table>
+
+
+ <button>Download Report</button>
+
+    </div>
+    </div>
+  <script>
+    const d= new Date();
+   document.getElementById('date').innerHTML= d;
+  </script>  
+</body>
+</html>
