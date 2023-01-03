@@ -126,11 +126,12 @@ const leaderboardList=document.getElementById('leaderboard');
 
     axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
     .then((response) => {
-    if(response.status === 201){
+        console.log(response)
+    if(response.status === 200){
         //the backend is sending a download link
         //  which if we open in browser, the file will get download
         var a = document.createElement("a");
-        a.href = response.data.fileUrl;
+      // a.href = response.data.fileURL;
         a.download = 'myexpense.csv';
         a.click();
     } else {
