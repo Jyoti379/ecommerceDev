@@ -2,26 +2,43 @@
     box-sizing: border-box;
     
 }
-body{
-    background-color: #20c689;
-    
-    
+
+form{
+  margin:2px;
+  
 }
 
 .container{
     position: absolute;
     display: inline;;
-    overflow:scroll ;
+    
     align-items: center;
     align-content: center;
-    margin:72px 300px;
-    border: 2px solid rgb(147, 152, 148);
+ 
+   
     border-radius: 5px;
     background-color: white;
     padding: 20px;
-    height: 500px;
-    width: 500px;
+    height:100%;
+    width: 100%;
 
+}
+
+.pagination{
+  margin-top: 2rem;
+  text-align: center;
+}
+.pagination a{
+  text-decoration: none;
+  color: #04AA6D;
+  padding:0.4rem;
+  border: 1px solid #04AA6D;
+  margin: 0rem 1rem;
+}
+.pagination a:hover,
+.pagination a:active{
+  background: #04AA6D;
+  color:white;
 }
 input[type=text], input[type=number]{
     width: 100%;
@@ -38,7 +55,7 @@ input[type=text], input[type=number]{
  button{
     background-color: #04AA6D;
     color: white;
-    margin: 2px;
+    margin: 10px;
     border:#04AA6D ;
     border-radius: 5px;
     cursor: pointer;

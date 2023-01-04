@@ -37,6 +37,8 @@ function parseJwt(token) {
         return JSON.parse(jsonPayload);
     }
 window.addEventListener("DOMContentLoaded", () => {
+    const page=1;
+
     const token = localStorage.getItem('token')
     const decodedToken = parseJwt(token)
     console.log(decodedToken);
@@ -46,32 +48,40 @@ window.addEventListener("DOMContentLoaded", () => {
         showPremiumUser();
          showLeaderboard();
     }
-    axios.get("http://localhost:3000/expense/get-expenses", { headers: { "Authorization": token } })
+    axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } })
         .then(response => {
 
-            console.log(response);
-            for (var i = 0; i < response.data.expenseDetails.length; i++) {
-                showExpenses(response.data.expenseDetails[i]);
-            }
+            console.log(response.data);
+            showExpenses(response.data.expenseDetails)
+            showPagination(response.data);
+           
+            
         })
         .catch(err => console.log(err))
 
 
 })
 
-function showExpenses(expense) {
-    document.getElementById('expense').value = '';
+function showExpenses(expenseData) {
+   /* document.getElementById('expense').value = '';
     document.getElementById('description').value = '';
-    document.getElementById('catagory').value = '';
+    document.getElementById('catagory').value = '';*/
+
+    const parentNode = document.querySelector('#add-expense');
+     parentNode.innerHTML='';
+     
+    expenseData.forEach(expense=>{
+        const parentNode = document.getElementById('add-expense');
+        const childHTML = `<li id=${expense.id}> ${expense.Expenseamount} : ${expense.description}:${expense.catagory}
+                                    <button onclick=deleteExpense('${expense.id}')> Delete Expense</button>
+     <button onclick=editUser('${expense.Expenseamount}','${expense.description}','${expense.catagory}','${expense.id}')>Edit Expense </button>
+                                 </li>`
+    
+        parentNode.innerHTML = parentNode.innerHTML + childHTML;  
+    })
 
 
-    const parentNode = document.getElementById('add-expense');
-    const childHTML = `<li id=${expense.id}> ${expense.Expenseamount} : ${expense.description}:${expense.catagory}
-                                <button onclick=deleteExpense('${expense.id}')> Delete Expense</button>
- <button onclick=editUser('${expense.Expenseamount}','${expense.description}','${expense.catagory}','${expense.id}')>Edit Expense </button>
-                             </li>`
 
-    parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
 
 
@@ -91,6 +101,59 @@ function removeUserFromScreen(expenseId) {
         parentNode.removeChild(childNodeToBeDeleted)
     }
 }
+
+function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previousPage,lastPage}){
+    const pagination=document.getElementById('pagination');
+    pagination.innerHTML='';
+    if(hasPreviousPage){
+        const btn2=document.createElement('button')
+        btn2.innerHTML=previousPage;
+        btn2.addEventListener('click',()=>{
+            getExpense(previousPage)
+        })
+        pagination.appendChild(btn2)
+       }
+       const btn1=document.createElement('button')
+       btn1.innerhtml=currentPage
+        btn1.addEventListener('click',()=>{
+            getExpense(currentPage)
+        })
+        pagination.appendChild(btn1);
+    
+        if(hasNextPage){
+            const btn3=document.createElement('button')
+            btn3.innerHTML=nextPage
+            btn3.addEventListener('click',()=>{
+                getExpense(nextPage)
+            })
+            pagination.appendChild(btn3) 
+        }
+        if(lastPage!==currentPage && nextPage!== lastPage){
+            const btn4=document.createElement('button')
+            btn4.innerHTML=lastPage
+            btn4.addEventListener('click',()=>{
+                getExpense(lastPage)
+            })
+            pagination.appendChild(btn4)   
+        }
+    
+     }
+
+     function getExpense(page){
+        const token = localStorage.getItem('token')
+        axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } })
+        .then((res)=>{
+            showExpenses(res.data.expenseDetails);
+            showPagination(res.data);
+    
+        }).catch(err=>{
+            console.log(err)
+        })
+     }
+    
+    
+
+
 
 function showPremiumUser(){
     document.getElementById('razorpay').style.visibility = "hidden";
