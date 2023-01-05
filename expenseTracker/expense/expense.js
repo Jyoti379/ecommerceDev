@@ -38,7 +38,7 @@ function parseJwt(token) {
     }
 window.addEventListener("DOMContentLoaded", () => {
     const page=1;
-
+   
     const token = localStorage.getItem('token')
     const decodedToken = parseJwt(token)
     console.log(decodedToken);
@@ -48,12 +48,15 @@ window.addEventListener("DOMContentLoaded", () => {
         showPremiumUser();
          showLeaderboard();
     }
-    axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token } })
+    axios.get(`http://localhost:3000/expense/get-expenses?page=${page}`, { headers: { "Authorization": token} })
         .then(response => {
-
+            
             console.log(response.data);
+            
+
             showExpenses(response.data.expenseDetails)
             showPagination(response.data);
+            
            
             
         })
@@ -63,19 +66,16 @@ window.addEventListener("DOMContentLoaded", () => {
 })
 
 function showExpenses(expenseData) {
-   /* document.getElementById('expense').value = '';
-    document.getElementById('description').value = '';
-    document.getElementById('catagory').value = '';*/
-
+    
     const parentNode = document.querySelector('#add-expense');
-     parentNode.innerHTML='';
+     parentNode.innerHTML='<tr style="background:#04AA6D;color:white"><th>id</th><th>Amount</th><th>Description</th><th>Catagory</th><th>Delete/Edit</th></tr>';
      
-    expenseData.forEach(expense=>{
+    const itemsPerPage=localStorage.getItem('numberOfRows');
+
+    
+    expenseData.slice(0,itemsPerPage).forEach(expense=>{
         const parentNode = document.getElementById('add-expense');
-        const childHTML = `<li id=${expense.id}> ${expense.Expenseamount} : ${expense.description}:${expense.catagory}
-                                    <button onclick=deleteExpense('${expense.id}')> Delete Expense</button>
-     <button onclick=editUser('${expense.Expenseamount}','${expense.description}','${expense.catagory}','${expense.id}')>Edit Expense </button>
-                                 </li>`
+        const childHTML = `<tr><th>${expense.id}</th><th>${expense.Expenseamount}</th><th>${expense.description}</th><th>${expense.catagory}</th><th> <button onclick=deleteExpense('${expense.id} style="background:#ed2f2f"')> Delete Expense</button>/<button onclick=editUser('${expense.Expenseamount}','${expense.description}','${expense.catagory}','${expense.id}')>Edit Expense </button></th></tr> `
     
         parentNode.innerHTML = parentNode.innerHTML + childHTML;  
     })
@@ -104,7 +104,9 @@ function removeUserFromScreen(expenseId) {
 
 function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previousPage,lastPage}){
     const pagination=document.getElementById('pagination');
-    pagination.innerHTML='';
+    pagination.innerHTML=`Rows Per Page :<input type="number" id="quantity" name="quantity"  min="1" max="100" style="width:60px;height:30px" oninput="save()">`;
+     document.getElementById('quantity').value= localStorage.getItem('numberOfRows')
+    
     if(hasPreviousPage){
         const btn2=document.createElement('button')
         btn2.innerHTML=previousPage;
@@ -138,6 +140,15 @@ function showPagination({currentPage,hasNextPage,nextPage,hasPreviousPage,previo
         }
     
      }
+     function save() {
+       
+        var numRows = document.getElementById('quantity').value;
+        localStorage.setItem('numberOfRows', numRows);
+        
+        }
+
+   
+
 
      function getExpense(page){
         const token = localStorage.getItem('token')
@@ -169,7 +180,7 @@ function showLeaderboard(){
      console.log(userLeaderboard.data)
 
 const leaderboardList=document.getElementById('leaderboard');
-    leaderboardList.innerHTML="<h3>Leader board</h3><tr><th>user</th><th>total-expense</th></tr>";
+    leaderboardList.innerHTML=`<h3>Leader board</h3><tr style="background:#04AA6D;color:white"><th>user</th><th>total-expense</th></tr>`;
    userLeaderboard.data.forEach((userDetails)=>{
       leaderboardList.innerHTML +=`<table>
 

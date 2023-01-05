@@ -25,19 +25,22 @@ form{
 }
 
 .pagination{
-  margin-top: 2rem;
+  margin-top: 2rem ;
   text-align: center;
 }
-.pagination a{
+.pagination button{
   text-decoration: none;
+  width: 30px;
+ 
   color: #04AA6D;
-  padding:0.4rem;
+   background-color: #f1f1f1;
+  padding:0.5rem;
   border: 1px solid #04AA6D;
-  margin: 0rem 1rem;
+  margin: 1rem 1rem;
 }
-.pagination a:hover,
-.pagination a:active{
-  background: #04AA6D;
+.pagination button:hover,
+.pagination button:active{
+  background:#04AA6D;
   color:white;
 }
 input[type=text], input[type=number]{
@@ -67,7 +70,7 @@ input[type=text], input[type=number]{
     opacity:1;
   }
   #premium{
-    color:rgb(237, 47, 47);
+    color:#ed2f2f;
     font-weight: bold;
   }
   table {
@@ -85,3 +88,5 @@ input[type=text], input[type=number]{
   tr:nth-child(even) {
     background-color: #25e49b;
   }
+
+  
